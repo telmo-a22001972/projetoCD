@@ -58,8 +58,34 @@ public class ServerImpl extends UnicastRemoteObject
     return true;
   }
 
-  public ArrayList<String> listarMesas() throws RemoteException {
-    return new ArrayList<>();
+  public String listarMesas() throws RemoteException {
+    Credentials cred = new Credentials();
+    String result = "";
+    System.out.println("Pedido listar mesas recebido\n");
+    try{
+
+      Connection con = DriverManager.getConnection(cred.getUrl(), cred.getUser(), cred.getPassword());
+
+
+      Statement st = con.createStatement();
+      ResultSet rs = st.executeQuery("SELECT * FROM mesa");
+
+      while (rs.next()) {
+
+        result += "Mesa ID: "+rs.getInt(1)+ " Número Pessoas: " +rs.getInt(2)
+                + (rs.getBoolean(3) ? " Reservado" : " Disponível") + "\n";
+
+      }
+
+      st.close();
+      con.close();
+
+    } catch(Exception e){
+      System.out.println(e);
+    }
+    System.out.println("Resposta ao pedido listar mesas efetuada");
+    return result;
+
   }
 
 

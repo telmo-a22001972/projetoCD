@@ -1,4 +1,6 @@
 import java.rmi.*;
+import java.util.Scanner;
+
 public class Client {
 
 
@@ -8,14 +10,36 @@ public class Client {
       String ServerURL = "rmi://" + args[0] + "/Server";
       ServerIntf ServerIntf =
                     (ServerIntf)Naming.lookup(ServerURL);
-      String opcao = args[1].trim();
+
+      Scanner reader = new Scanner(System.in);  // Create a Scanner object
+      System.out.println(
+              "\tMenu\n"+
+              "\nlistar mesas\n"+
+              "reservar mesa\n"+
+              "cancelar mesa\n"+
+              "registar utilizador\n"
+      );
+
+      String opcao = reader.nextLine().trim();
 
       switch (opcao) {
-        case "1":
-          System.out.println(ServerIntf.reservarMesa("0"));
+        case "reservar mesa":
+          System.out.println("Introduza o ID da mesa, a data e o horário.\nExemplo: 5 2022-12-31 almoço");
+          String input = reader.nextLine();
+          String[] dados = input.split(" ");
+          String idMesa = dados[0].trim();
+          String data = dados[1].trim();
+          String horario = dados[2].trim();
 
-        case "2":
+          boolean resultado = ServerIntf.reservarMesa(idMesa,data, horario);
+
+          System.out.println(resultado? "Mesa reservada" : "Não foi possível reservar a mesa. Verifique se os parâmetros foram inseridos corretamente");
+
+          break;
+        case "listar mesa":
+          System.out.println(opcao);
           System.out.println(ServerIntf.listarMesas());
+          break;
       }
     }
     catch(Exception e) {

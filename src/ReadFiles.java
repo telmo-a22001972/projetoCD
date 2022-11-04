@@ -19,7 +19,7 @@ public class ReadFiles {
             while((line = reader.readLine()) != null) {
                 String[] linhas = line.split(",");
 
-                result.concat("Mesa: " + linhas[0] + " Numero de pessoas: " + linhas[1] + "Estado: " + linhas[2]);
+                result += "Mesa: " + linhas[0] + " Numero de pessoas: " + linhas[1] + "Estado: " + linhas[2];
             }
         } catch(IOException e) {
             e.printStackTrace();

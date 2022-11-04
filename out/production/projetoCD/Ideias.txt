@@ -1,0 +1,1 @@
+Investigar JDBC para eventualmente substituir os ficheiros .txt como database

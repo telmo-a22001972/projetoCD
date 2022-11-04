@@ -1,3 +1,6 @@
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.sql.*;
 
 public class database_con_example {
@@ -10,20 +13,25 @@ public class database_con_example {
             String password = "fuiCOMPRARcebolas2021!";
 
             //Class.forName("com.mysql.cj.jdbc.Driver");
-            Connection con = DriverManager.getConnection(url, "chefe@restaurantegourmet", "fuiCOMPRARcebolas2021!");
+            Connection con = DriverManager.getConnection(url, user, password);
 
             System.out.println("Conexão Feita");
 
             Statement st = con.createStatement();
 
-            String s = "insert into mesa(id, nPessoas, reservado) values(3, 4, false)";
+            //String s = "insert into mesa(id, nPessoas, reservado) values(3, 4, false)";
 
-            st.execute(s);
+            //Como mostrar um SELECT * FROM
+            ResultSet rs = st.executeQuery("SELECT * FROM mesa");
+            while (rs.next()) {
+                System.out.println("Mesa ID: "+rs.getInt(1)+ " Número Pessoas: "+rs.getInt(2)+" Reservado: "+rs.getBoolean(3));
+            }
+            //st.execute(s);
 
             st.close();
             con.close();
 
-            System.out.println("Big done");
+            System.out.println("\nBig done");
 
 
         }catch(Exception e){
