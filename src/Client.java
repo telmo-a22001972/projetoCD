@@ -24,7 +24,7 @@ public class Client {
 
         switch (opcao) {
           case "reservar mesa":
-            System.out.println("Introduza o ID da mesa, a data e o horário.\nExemplo: 5 2022-12-31 almoço");
+            System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 5 2022-12-31 jantar\n");
             String input = reader.nextLine();
             String[] dados = input.split(" ");
             String idMesa = dados[0].trim();
@@ -37,12 +37,21 @@ public class Client {
 
             break;
           case "listar mesas":
-            System.out.println(ServerIntf.listarMesas("2022-11-04"));
+
+            System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 2022-12-31\n");
+            String input2 = reader.nextLine();
+            System.out.println(ServerIntf.listarMesas(input2.trim()));
             break;
 
           case "cancelar mesa":
-            //TODO implementar cancelar mesa
-            System.out.println("Implementar cancelar mesa");
+            System.out.println("\nIndique qual reserva pretende cancelar.\nExemplo: 5 2022-12-31 jantar\n");
+            String input3 = reader.nextLine();
+            String[] dados3 = input3.split(" ");
+            String idMesa3 = dados3[0].trim();
+            String data3 = dados3[1].trim();
+            String horario3 = dados3[2].trim();
+
+            System.out.println(ServerIntf.cancelarMesa(idMesa3,data3, horario3));
             break;
         }
       }
