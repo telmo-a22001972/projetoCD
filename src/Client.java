@@ -43,21 +43,21 @@ public class Client {
           case "reservar mesa":
             System.out.println("Para reservar uma mesa precisa estar autenticado, insira abaixo as suas credenciais abaixo");
 
-            System.out.println("\nInsira o emailr: ");
+            System.out.println("\nInsira o email: ");
             String username_reservar= reader.nextLine();
 
             if(ServerIntf.autenticar(username_reservar, lerPassword())){
 
-            System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 5 2022-12-31 jantar\n");
-            String input = reader.nextLine();
-            String[] dados = input.split(" ");
-            String idMesa = dados[0].trim();
-            String data = dados[1].trim();
-            String horario = dados[2].trim();
+              System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 5 2022-12-31 jantar\n");
+              String input = reader.nextLine();
+              String[] dados = input.split(" ");
+              String idMesa = dados[0].trim();
+              String data = dados[1].trim();
+              String horario = dados[2].trim();
 
-            boolean resultado = ServerIntf.reservarMesa(idMesa,data, horario);
+              boolean resultado = ServerIntf.reservarMesa(idMesa,data, horario);
 
-            System.out.println(resultado? "Mesa reservada" : "Não foi possível reservar a mesa. Verifique se os parâmetros foram inseridos corretamente");
+              System.out.println(resultado? "Mesa reservada" : "Não foi possível reservar a mesa. Verifique se os parâmetros foram inseridos corretamente");
 
           }else{
               System.out.println("Credenciais inválidas. Tente novamente ou registe-se.");
@@ -65,21 +65,40 @@ public class Client {
             break;
 
           case "listar mesas":
+            System.out.println("Para listar as mesas precisa estar autenticado, insira abaixo as suas credenciais abaixo");
 
-            System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 2022-12-31\n");
-            String input2 = reader.nextLine();
-            System.out.println(ServerIntf.listarMesas(input2.trim()));
+            System.out.println("\nInsira o email: ");
+            String username_listar = reader.nextLine();
+
+            if(ServerIntf.autenticar(username_listar, lerPassword())) {
+
+              System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 2022-12-31\n");
+              String input2 = reader.nextLine();
+              System.out.println(ServerIntf.listarMesas(input2.trim()));
+            }else {
+              System.out.println("Credenciais inválidas. Tente novamente ou registe-se.");
+            }
             break;
 
           case "cancelar mesa":
-            System.out.println("\nIndique qual reserva pretende cancelar.\nExemplo: 5 2022-12-31 jantar\n");
-            String input3 = reader.nextLine();
-            String[] dados3 = input3.split(" ");
-            String idMesa3 = dados3[0].trim();
-            String data3 = dados3[1].trim();
-            String horario3 = dados3[2].trim();
+            System.out.println("Para listar as mesas precisa estar autenticado, insira abaixo as suas credenciais abaixo");
 
-            System.out.println(ServerIntf.cancelarMesa(idMesa3,data3, horario3));
+            System.out.println("\nInsira o email: ");
+            String username_cancelar = reader.nextLine();
+
+            if(ServerIntf.autenticar(username_cancelar, lerPassword())) {
+
+              System.out.println("\nIndique qual reserva pretende cancelar.\nExemplo: 5 2022-12-31 jantar\n");
+              String input3 = reader.nextLine();
+              String[] dados3 = input3.split(" ");
+              String idMesa3 = dados3[0].trim();
+              String data3 = dados3[1].trim();
+              String horario3 = dados3[2].trim();
+
+              System.out.println(ServerIntf.cancelarMesa(idMesa3, data3, horario3));
+            } else {
+              System.out.println("Credenciais inválidas. Tente novamente ou registe-se.");
+            }
             break;
 
           case "registar utilizador":
@@ -98,9 +117,11 @@ public class Client {
                     "\nInsira a password: "
             );
 
-            System.out.println("Password: "+ password);
-
-            System.out.println(ServerIntf.registar(username, password));
+            if(ServerIntf.registar(username, password)){
+              System.out.println("Registo feito com sucesso");
+            }else {
+              System.out.println("Não foi possível fazer o registo, email já em uso");
+            }
         }
       }
     }

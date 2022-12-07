@@ -142,7 +142,7 @@ public class ServerImpl extends UnicastRemoteObject
             //Update ao HashMap
             mesasReservadas.put(mesa_id, temp);
           }else{
-            System.out.println("criei o id");
+            //System.out.println("criei o id");
             temp.add(rs.getString(2));
             mesasReservadas.put(mesa_id ,temp);
           }
@@ -190,25 +190,60 @@ public class ServerImpl extends UnicastRemoteObject
   }
 
   public boolean autenticar(String email, char[] password){
-    return true;
+    Credentials cred = new Credentials();
+    String result = "";
+    System.out.println("Pedido autenticar recebido\n");
+
+    try{
+      String passwordHashed = encryptPassword(new String(password));
+
+      Connection con = DriverManager.getConnection(cred.getUrl(), cred.getUser(), cred.getPassword());
+
+      PreparedStatement query = con.prepareStatement("SELECT * FROM pessoa WHERE email = ? AND password = ?");
+      query.setString(1, email);
+      query.setString(2, passwordHashed);
+
+
+      Statement st = con.createStatement();
+      ResultSet rs = query.executeQuery();
+
+      if(rs.next()){
+        //existe
+        System.out.println("Registo Encontrado\n");
+        System.out.println("Resposta ao pedido reservar mesa efetuada");
+
+        //Credenciais batem certo
+        return true;
+      }else {
+        System.out.println("Nao existe registo\n");
+        System.out.println("Resposta ao pedido autenticar efetuada");
+
+        //Credenciais não batem certo
+        return false;
+      }
+
+    } catch(Exception e){
+      System.out.println(e);
+      return false;
+    }
   }
 
   public  boolean registar(String email, char[] password){
     Credentials cred = new Credentials();
     String result = "";
-    System.out.println("Pedido reservar mesas recebido\n");
+    System.out.println("Pedido registar utilizador recebido\n");
 
     try{
 
       Connection con = DriverManager.getConnection(cred.getUrl(), cred.getUser(), cred.getPassword());
 
-      PreparedStatement query = con.prepareStatement("SELECT * FROM pessoa WHERE nome = ?");
+      PreparedStatement query = con.prepareStatement("SELECT * FROM pessoa WHERE email = ?");
       query.setString(1, email);
 
       Statement st = con.createStatement();
       ResultSet rs = query.executeQuery();
 
-      if(rs.next() && !rs.getBoolean(6)){
+      if(rs.next()){
         //existe
         System.out.println("Registo Encontrado\n");
         System.out.println("Resposta ao registar utilizador efetuado");
@@ -220,9 +255,9 @@ public class ServerImpl extends UnicastRemoteObject
         System.out.println("Nao existe registo\n");
         System.out.println("Resposta ao pedido registar utilizador efetuado");
 
-        String passwordHashed = encryptPassword(password.toString());
+        String passwordHashed = encryptPassword(new String(password));
 
-        String s = "insert into pessoa(nome, password) values(" + "\"" + email+ "\"" + "," + "\""+ passwordHashed + "\"" +");";
+        String s = "insert into pessoa(email, password) values(" + "\"" + email+ "\"" + "," + "\""+ passwordHashed + "\"" +");";
         st.execute(s);
 
 
