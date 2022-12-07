@@ -6,6 +6,9 @@ import java.util.ArrayList;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class ServerImpl extends UnicastRemoteObject
   implements ServerIntf {
@@ -186,5 +189,85 @@ public class ServerImpl extends UnicastRemoteObject
 
   }
 
+  public boolean autenticar(String email, char[] password){
+    return true;
+  }
+
+  public  boolean registar(String email, char[] password){
+    Credentials cred = new Credentials();
+    String result = "";
+    System.out.println("Pedido reservar mesas recebido\n");
+
+    try{
+
+      Connection con = DriverManager.getConnection(cred.getUrl(), cred.getUser(), cred.getPassword());
+
+      PreparedStatement query = con.prepareStatement("SELECT * FROM pessoa WHERE nome = ?");
+      query.setString(1, email);
+
+      Statement st = con.createStatement();
+      ResultSet rs = query.executeQuery();
+
+      if(rs.next() && !rs.getBoolean(6)){
+        //existe
+        System.out.println("Registo Encontrado\n");
+        System.out.println("Resposta ao registar utilizador efetuado");
+
+
+        //Já existe reserva
+        return false;
+      }else {
+        System.out.println("Nao existe registo\n");
+        System.out.println("Resposta ao pedido registar utilizador efetuado");
+
+        String passwordHashed = encryptPassword(password.toString());
+
+        String s = "insert into pessoa(nome, password) values(" + "\"" + email+ "\"" + "," + "\""+ passwordHashed + "\"" +");";
+        st.execute(s);
+
+
+        //Não existe utilizador
+        return true;
+      }
+
+    } catch(Exception e){
+      System.out.println(e);
+      return false;
+    }
+
+
+  }
+
+
+    public static String encryptPassword(String input) {
+      try {
+        // getInstance() method is called with algorithm SHA-512
+        MessageDigest md = MessageDigest.getInstance("SHA-512");
+
+        // digest() method is called
+        // to calculate message digest of the input string
+        // returned as array of byte
+        byte[] messageDigest = md.digest(input.getBytes());
+
+        // Convert byte array into signum representation
+        BigInteger no = new BigInteger(1, messageDigest);
+
+        // Convert message digest into hex value
+        String hashtext = no.toString(16);
+
+        // Add preceding 0s to make it 32 bit
+        while (hashtext.length() < 32) {
+          hashtext = "0" + hashtext;
+        }
+
+        // return the HashText
+        return hashtext;
+      }
+
+      // For specifying wrong message digest algorithms
+      catch (NoSuchAlgorithmException e) {
+        throw new RuntimeException(e);
+      }
+    }
 
 }

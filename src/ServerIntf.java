@@ -6,4 +6,9 @@ public interface ServerIntf extends Remote {
   String cancelarMesa(String idMesa, String data, String horario) throws RemoteException;
   String listarMesas(String data) throws RemoteException;
 
+  boolean autenticar(String nome, char[] password) throws RemoteException;
+
+  boolean registar(String nome, char[] password) throws  RemoteException;
+
+
 }
