@@ -45,8 +45,9 @@ public class Client {
 
             System.out.println("\nInsira o email: ");
             String username_reservar= reader.nextLine();
-
-            if(ServerIntf.autenticar(username_reservar, lerPassword())){
+            int idPessoa = ServerIntf.autenticar(username_reservar, lerPassword());
+            System.out.println(idPessoa);
+            if(idPessoa != -1){
 
               System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 5 2022-12-31 jantar\n");
               String input = reader.nextLine();
@@ -55,8 +56,8 @@ public class Client {
               String data = dados[1].trim();
               String horario = dados[2].trim();
 
-              boolean resultado = ServerIntf.reservarMesa(idMesa,data, horario);
-
+              boolean resultado = ServerIntf.reservarMesa(idMesa,data, horario, idPessoa);
+              System.out.println(resultado+"\n");
               System.out.println(resultado? "Mesa reservada" : "Não foi possível reservar a mesa. Verifique se os parâmetros foram inseridos corretamente");
 
           }else{
@@ -70,7 +71,8 @@ public class Client {
             System.out.println("\nInsira o email: ");
             String username_listar = reader.nextLine();
 
-            if(ServerIntf.autenticar(username_listar, lerPassword())) {
+            int idPessoa2 = ServerIntf.autenticar(username_listar, lerPassword());
+            if(idPessoa2 != -1) {
 
               System.out.println("\nPara qual data pretende consultar a disponibilidade das mesas?.\nExemplo: 2022-12-31\n");
               String input2 = reader.nextLine();
@@ -86,7 +88,8 @@ public class Client {
             System.out.println("\nInsira o email: ");
             String username_cancelar = reader.nextLine();
 
-            if(ServerIntf.autenticar(username_cancelar, lerPassword())) {
+            int idPessoa3 = ServerIntf.autenticar(username_cancelar, lerPassword());
+            if(idPessoa3 != -1) {
 
               System.out.println("\nIndique qual reserva pretende cancelar.\nExemplo: 5 2022-12-31 jantar\n");
               String input3 = reader.nextLine();

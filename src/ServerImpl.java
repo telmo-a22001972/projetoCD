@@ -16,7 +16,7 @@ public class ServerImpl extends UnicastRemoteObject
   public ServerImpl() throws RemoteException {
   }
 
-  public boolean reservarMesa(String idMesa, String data, String horario) throws RemoteException {
+  public boolean reservarMesa(String idMesa, String data, String horario, int idPessoa) throws RemoteException {
     Credentials cred = new Credentials();
     String result = "";
     System.out.println("Pedido reservar mesas recebido\n");
@@ -44,13 +44,14 @@ public class ServerImpl extends UnicastRemoteObject
         System.out.println("Nao existe registo\n");
         System.out.println("Resposta ao pedido reservar mesa efetuada");
 
-        String s = "insert into reserva(dia, horario, pessoa_id, mesa_id) values(" + "\"" + data+ "\"" + "," + "\""+ horario + "\"" + ", 1," + idMesa + ");";
+        String s = "insert into reserva(dia, horario, pessoa_id, mesa_id) values(" + "\"" + data+ "\"" + "," + "\""+ horario + "\"" + "," + idPessoa + "," + idMesa + ");";
         st.execute(s);
 
-        if(rs.getBoolean(6)){
+        /*if(rs.getBoolean(6)){
+          System.out.println("entrei aqui");
           s = "update reserva set cancelado = 0 where dia = " + "\"" + data+ "\"" + " and horario = " + "\"" + horario+ "\"" + "and mesa_id = " + idMesa;
           st.execute(s);
-        }
+        }*/
 
         System.out.println("Mesa entry updated");
         //Não existe reserva
@@ -189,10 +190,11 @@ public class ServerImpl extends UnicastRemoteObject
 
   }
 
-  public boolean autenticar(String email, char[] password){
+  public int autenticar(String email, char[] password){
     Credentials cred = new Credentials();
     String result = "";
     System.out.println("Pedido autenticar recebido\n");
+    int idPessoa = -1;
 
     try{
       String passwordHashed = encryptPassword(new String(password));
@@ -209,22 +211,24 @@ public class ServerImpl extends UnicastRemoteObject
 
       if(rs.next()){
         //existe
+        idPessoa = rs.getInt(1);
         System.out.println("Registo Encontrado\n");
         System.out.println("Resposta ao pedido reservar mesa efetuada");
 
         //Credenciais batem certo
-        return true;
+        return idPessoa;
       }else {
+
         System.out.println("Nao existe registo\n");
         System.out.println("Resposta ao pedido autenticar efetuada");
 
         //Credenciais não batem certo
-        return false;
+        return idPessoa;
       }
 
     } catch(Exception e){
       System.out.println(e);
-      return false;
+      return idPessoa;
     }
   }
 
